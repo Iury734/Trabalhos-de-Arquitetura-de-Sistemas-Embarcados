@@ -1,0 +1,87 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/include",
+                "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/src",
+                "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated/zephyr",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/include",
+                "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis/kl2x",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis/common",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/cmsis/CMSIS/Core/Include",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/cmsis_6/CMSIS/Core/Include",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/modules/cmsis_6",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk/devices/MKL25Z4",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk/devices/MKL25Z4/drivers",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/common",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/lpsci",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/port",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/include",
+                    "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/src",
+                    "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated/zephyr",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/include",
+                    "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis/kl2x",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/soc/nxp/kinetis/common",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/cmsis/CMSIS/Core/Include",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/cmsis_6/CMSIS/Core/Include",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/modules/cmsis_6",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk/devices/MKL25Z4",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk/devices/MKL25Z4/drivers",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/common",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/lpsci",
+                    "D:/Programas/PlatformIO/packages/framework-zephyr/_pio/modules/hal/nxp/mcux/mcux-sdk-ng/drivers/port",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60119",
+                "CPU_MKL25Z128VLK4",
+                "KERNEL",
+                "K_HEAP_MEM_POOL_SIZE=0",
+                "NDEBUG",
+                "__LINUX_ERRNO_EXTENSIONS__",
+                "__PROGRAM_START",
+                "__ZEPHYR__=1",
+                ""
+            ],
+            "cStandard": "c99",
+            "forcedInclude": [
+                "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated/zephyr/autoconf.h",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/include/zephyr/toolchain/zephyr_stdint.h",
+                ""
+            ],
+            "compilerPath": "D:/Programas/PlatformIO/packages/toolchain-gccarmnoneeabi/bin/arm-none-eabi-gcc.exe",
+            "compilerArgs": [
+                "-mcpu=cortex-m0plus",
+                "-mthumb",
+                "-mabi=aapcs",
+                "-mfp16-format=ieee",
+                "-isystem",
+                "D:/Programas/PlatformIO/packages/framework-zephyr/lib/libc/common/include",
+                "-isystem",
+                "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/modules/picolibc/picolibc/include",
+                "-isystem",
+                "d:/programas/platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/8.2.1/include",
+                "-isystem",
+                "d:/programas/platformio/packages/toolchain-gccarmnoneeabi/bin/../lib/gcc/arm-none-eabi/8.2.1/include-fixed",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
