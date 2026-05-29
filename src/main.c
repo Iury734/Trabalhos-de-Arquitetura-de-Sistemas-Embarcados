@@ -21,25 +21,25 @@ typedef enum {
 
 void main(void)
 {
-    // 1. Verificação se os dispositivos (pinos) estão prontos
+    // Verificação se os dispositivos (pinos) estão prontos
     if (!gpio_is_ready_dt(&Led_Vermelho) || 
         !gpio_is_ready_dt(&Led_Verde) || 
         !gpio_is_ready_dt(&Led_Azul)) {
         return;
     }
 
-    // 2. Configuração dos pinos como saída e inicialização em estado inativo (desligados)
+    // Configuração dos pinos como saída e inicialização em estado inativo (desligados)
     gpio_pin_configure_dt(&Led_Vermelho, GPIO_OUTPUT_INACTIVE);
     gpio_pin_configure_dt(&Led_Verde, GPIO_OUTPUT_INACTIVE);
     gpio_pin_configure_dt(&Led_Azul, GPIO_OUTPUT_INACTIVE);
 
-    // 3. Inicializa a máquina de estados no Verde (primeira cor)
+    // Inicializa a máquina de estados no Verde (primeira cor)
     Estado_Semaforo Estado_Atual = Estado_Verde;
 
     // Loop infinito do RTOS
     while (1) {
         
-        // 4. Máquina de Estados para o Semáforo
+        // Máquina de Estados para o Semáforo
         switch (Estado_Atual) {
             
             case Estado_Verde:
