@@ -1,82 +1,83 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/console/console.h>
+#include <stdio.h>
+#include <pwm_z42.h>
 
-// Macros para facilitar a inversão de lógica caso sua placa seja Active-Low bruto.
-// Se as cores apagarem quando deveriam ligar, inverta: LIGADO 0 e DESLIGADO 1.
-#define LED_LIGADO 1
-#define LED_DESLIGADO 0
+/* --- Engenharia de Frequência do HC-SR04 --- */
+#define PRESCALER PS_16
+#define TPM_PERIODO 50000 // 50.000 ticks * 2us = 100ms (10 leituras por segundo)
+#define TPM_GATILHO 5     // 5 ticks * 2us = 10us (Gatilho mínimo do HC-SR04)
 
-// O mapeamento definitivo baseado nos seus testes físicos:
-static const struct gpio_dt_spec Led_Vermelho = GPIO_DT_SPEC_GET(DT_ALIAS(led2), gpios); // led2 é o Vermelho
-static const struct gpio_dt_spec Led_Verde = GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);    // led0 é o Verde
-static const struct gpio_dt_spec Led_Azul = GPIO_DT_SPEC_GET(DT_ALIAS(led1), gpios);     // led1 é o Azul
+/* --- Variáveis Globais do Cronômetro (Interrupção) --- */
+volatile uint16_t tempo_subida = 0;
+volatile uint16_t duracao_ticks = 0;
+volatile int nova_leitura = 0;
+volatile int borda_esperada = 1; // 1 = esperando Subida, 0 = esperando Descida
 
-// Definição dos estados do semáforo na nova ordem solicitada
-typedef enum {
-    Estado_Verde,
-    Estado_Amarelo,
-    Estado_Vermelho
-} Estado_Semaforo;
+/* --- A Rotina de Interrupção (ISR) do TPM1 --- */
+void tpm1_isr(const void *arg) {
+    // 1. Limpa as flags para avisar a placa que já vimos o "grito"
+    TPM1->STATUS |= TPM_STATUS_CH0F_MASK;       
+    TPM1->CONTROLS[0].CnSC |= TPM_CnSC_CHF_MASK;
 
-void main(void)
-{
-    // 1. Verificação se os dispositivos (pinos) estão prontos
-    if (!gpio_is_ready_dt(&Led_Vermelho) || 
-        !gpio_is_ready_dt(&Led_Verde) || 
-        !gpio_is_ready_dt(&Led_Azul)) {
-        return;
+    // 2. Salva o valor exato do cronômetro naquele instante
+    uint16_t captura = TPM1->CONTROLS[0].CnV;
+
+    if (borda_esperada == 1) {
+        tempo_subida = captura;
+        borda_esperada = 0; 
+    } else {
+        duracao_ticks = captura - tempo_subida; 
+        nova_leitura = 1;   
+        borda_esperada = 1; 
     }
+}
 
-    // 2. Configuração dos pinos como saída e inicialização em estado inativo (desligados)
-    gpio_pin_configure_dt(&Led_Vermelho, GPIO_OUTPUT_INACTIVE);
-    gpio_pin_configure_dt(&Led_Verde, GPIO_OUTPUT_INACTIVE);
-    gpio_pin_configure_dt(&Led_Azul, GPIO_OUTPUT_INACTIVE);
+int main(void) {
+    k_msleep(500); // Pequena pausa para estabilizar o terminal serial
+    printk("\n\n=== RADAR ULTRASSOM (HC-SR04) INICIADO ===\n");
 
-    // 3. Inicializa a máquina de estados no Verde (primeira cor)
-    Estado_Semaforo Estado_Atual = Estado_Verde;
+    /* ==============================================================
+     * 1. CONFIGURANDO O GATILHO (TRIGGER) - TPM2, Canal 0, Pino PTB2
+     * ============================================================== */
+    pwm_tpm_Init(TPM2, TPM_OSCERCLK, TPM_PERIODO, TPM_CLK, PRESCALER, EDGE_PWM);
+    pwm_tpm_Ch_Init(TPM2, 0, TPM_PWM_H, GPIOB, 2);
+    pwm_tpm_CnV(TPM2, 0, TPM_GATILHO); 
 
-    // Loop infinito do RTOS
+
+    /* ==============================================================
+     * 2. CONFIGURANDO O CRONÔMETRO (ECHO) - TPM1, Canal 0, Pino PTB0
+     * ============================================================== */
+    pwm_tpm_Init(TPM1, TPM_OSCERCLK, 0xFFFF, TPM_CLK, PRESCALER, EDGE_PWM);
+    pwm_tpm_Ch_Init(TPM1, 0, (TPM_CnSC_ELSA_MASK | TPM_CnSC_ELSB_MASK), GPIOB, 0);
+    TPM1->CONTROLS[0].CnSC |= TPM_CnSC_CHIE_MASK;
+
+
+    /* ==============================================================
+     * 3. LIGANDO A INTERRUPÇÃO NO ZEPHYR (SO)
+     * ============================================================== */
+    // Movido de volta para cá para respeitar as regras de sintaxe da macro do Zephyr
+    IRQ_CONNECT(18, 0, tpm1_isr, NULL, 0);
+    irq_enable(18);
+
+
+    /* ==============================================================
+     * 4. LOOP INFINITO - Exibição dos Dados
+     * ============================================================== */
     while (1) {
-        
-        // 4. Máquina de Estados para o Semáforo
-        switch (Estado_Atual) {
-            
-            case Estado_Verde:
-                // Liga apenas o Verde
-                gpio_pin_set_dt(&Led_Vermelho, LED_DESLIGADO);
-                gpio_pin_set_dt(&Led_Verde, LED_LIGADO);
-                gpio_pin_set_dt(&Led_Azul, LED_DESLIGADO);
-                
-                k_msleep(3000); // Fica verde por 3 segundos
-                
-                // Transição: Verde -> Amarelo
-                Estado_Atual = Estado_Amarelo;
-                break;
+        if (nova_leitura == 1) {
+            nova_leitura = 0; 
 
-            case Estado_Amarelo:
-                // Liga Vermelho e Verde juntos para formar Amarelo (Garantindo que Azul está fora)
-                gpio_pin_set_dt(&Led_Vermelho, LED_LIGADO);
-                gpio_pin_set_dt(&Led_Verde, LED_LIGADO);
-                gpio_pin_set_dt(&Led_Azul, LED_DESLIGADO);
-                
-                k_msleep(1000); // Fica amarelo por 1 segundo
-                
-                // Transição: Amarelo -> Vermelho
-                Estado_Atual = Estado_Vermelho;
-                break;
+            float tempo_us = duracao_ticks * 2.0f;
+            float distancia_cm = tempo_us / 58.0f;
 
-            case Estado_Vermelho:
-                // Liga apenas o Vermelho
-                gpio_pin_set_dt(&Led_Vermelho, LED_LIGADO);
-                gpio_pin_set_dt(&Led_Verde, LED_DESLIGADO);
-                gpio_pin_set_dt(&Led_Azul, LED_DESLIGADO);
-                
-                k_msleep(3000); // Fica vermelho por 3 segundos
-                
-                // Transição: Vermelho -> Verde
-                Estado_Atual = Estado_Verde;
-                break;
+            printk("Alvo detectado a: %.2f cm\n", (double)distancia_cm);
         }
+        
+        k_msleep(100); 
     }
+
+    return 0;
 }
