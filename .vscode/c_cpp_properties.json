@@ -10,6 +10,7 @@
             "includePath": [
                 "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/include",
                 "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/src",
+                "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/lib/pwm_driver",
                 "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated/zephyr",
                 "D:/Programas/PlatformIO/packages/framework-zephyr/include",
                 "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated",
@@ -31,6 +32,7 @@
                 "path": [
                     "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/include",
                     "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/src",
+                    "d:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/lib/pwm_driver",
                     "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated/zephyr",
                     "D:/Programas/PlatformIO/packages/framework-zephyr/include",
                     "D:/Programas/PlatformIO/Projects/260517-151955-zephyr-blink/.pio/build/frdm_kl25z/zephyr/include/generated",
